@@ -33,7 +33,7 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
 
     # Hyper-parameters
-    argparser.add_argument("--epochs", default=1000, type=int)
+    argparser.add_argument("--epochs", default=50, type=int)
     argparser.add_argument("--batch-size", default=4, type=int)
     argparser.add_argument("--sampling-timesteps", default=50, type=int)  # Changed for Flow Matching
     argparser.add_argument("--in-dim", default=5, type=int)
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     argparser.add_argument("--target-type", default="velocity", type=str, choices=("velocity", "x_0"), help="Flow Matching target type")
     argparser.add_argument("--solver-type", default="heun", type=str, choices=("euler", "heun", "dopri5"), help="ODE solver type")
     
-    argparser.add_argument("--loss-type", default="l2", type=str, choices=("l1", "l2", "Hilburn_Loss"))
+    argparser.add_argument("--loss-type", default="Hilburn_Loss", type=str, choices=("l1", "l2", "Hilburn_Loss"))
     argparser.add_argument("--learning-rate", default=0.0001, type=float)
     argparser.add_argument("--gf-sigmat", default=0, type=float)
     argparser.add_argument("--gf-sigma1", default=0, type=float)
