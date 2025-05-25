@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/562/jb6516/SHRIMP_Flowmatch/./shrimp_dit.py", line 9, in <module>
+    import torch.optim as optim
+  File "/home/562/jb6516/.local/lib/python3.9/site-packages/torch/optim/__init__.py", line 9, in <module>
+    from torch.optim import lr_scheduler as lr_scheduler, swa_utils as swa_utils
+  File "/home/562/jb6516/.local/lib/python3.9/site-packages/torch/optim/lr_scheduler.py", line 25, in <module>
+    from torch import inf, Tensor
+ImportError: cannot import name 'inf' from 'torch' (unknown location)

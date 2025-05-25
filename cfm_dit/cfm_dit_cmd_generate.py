@@ -21,7 +21,7 @@ base_params = {
     "dit_model": ["DiT-L/4"],
     
     # Flow Matching specific parameters
-    "sigma_min": [1e-4, 1e-3],
+    "sigma_min": [1e-4],
     "sigma_max": [1.0],
     "rho": [7.0],  # Time distribution parameter
     "target_type": ["velocity"],  # Focus on velocity field learning
@@ -190,8 +190,7 @@ def generate_pbs_script(group_of_cmds, group_id, experiment_name, walltime="24:0
         "",
         "module purge",
         "module load use.own",
-        "module load tensorflow/2.15.0",
-        "module load pytorch/2.0.1",  # Add PyTorch for Flow Matching
+        "module load python3/3.9.2",
         "",
         "echo \"Flow Matching + DiT Job $PBS_JOBID started at $(date)\"",
         "echo \"Working directory: $(pwd)\"",
@@ -274,7 +273,7 @@ if __name__ == "__main__":
         
     elif experiment_type == "full":
         print("🎯 Running full parameter sweep...")
-        run_experiment("full_sweep", base_params, walltime="48:00:00", mem="128GB")
+        run_experiment("full_sweep", base_params, walltime="24:00:00", mem="128GB")
         
     elif experiment_type == "test":
         print("🧪 Running test mode (no submission)...")

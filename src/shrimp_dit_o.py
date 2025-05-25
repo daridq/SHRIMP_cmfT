@@ -7,7 +7,7 @@ import time
 import numpy as np
 import torch
 import torch.optim as optim
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
@@ -261,14 +261,14 @@ if __name__ == "__main__":
                 torch.save(checkpoint, saved_model)
                 logger.info(f"Model epoch {epoch} saved to {saved_model} with validation loss {val_loss:.10f} and fss {val_fss:.10f}")
 
-        plt.plot(train_losses, label='Training Loss')
-        plt.plot(val_losses, label='Validation Loss')
-        plt.title(f'Training and Validation Loss Curves - {args.label}')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.legend()
-        plt.savefig(os.path.join(args.model_path, f"Loss_Curve_{args.label}.pdf"))
-        plt.close()
+        # plt.plot(train_losses, label='Training Loss')
+        # plt.plot(val_losses, label='Validation Loss')
+        # plt.title(f'Training and Validation Loss Curves - {args.label}')
+        # plt.xlabel('Epochs')
+        # plt.ylabel('Loss')
+        # plt.legend()
+        # plt.savefig(os.path.join(args.model_path, f"Loss_Curve_{args.label}.pdf"))
+        # plt.close()
 
         checkpoint = {
             'saved_epoch': saved_epoch+args.epochs,  # saved_epoch: ran epochs

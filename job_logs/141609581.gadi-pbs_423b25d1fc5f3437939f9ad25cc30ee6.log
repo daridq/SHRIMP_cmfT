@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/562/jb6516/SHRIMP_Flowmatch/./shrimp_dit.py", line 9, in <module>
+    import torch.optim as optim
+  File "/home/562/jb6516/.local/lib/python3.9/site-packages/torch/optim/__init__.py", line 9, in <module>
+    from torch.optim import lr_scheduler as lr_scheduler, swa_utils as swa_utils
+  File "/home/562/jb6516/.local/lib/python3.9/site-packages/torch/optim/lr_scheduler.py", line 24, in <module>
+    from .optimizer import Optimizer
+  File "/home/562/jb6516/.local/lib/python3.9/site-packages/torch/optim/optimizer.py", line 28, in <module>
+    import torch.utils.hooks as hooks
+  File "/home/562/jb6516/.local/lib/python3.9/site-packages/torch/utils/__init__.py", line 8, in <module>
+    from torch.utils import (
+  File "/home/562/jb6516/.local/lib/python3.9/site-packages/torch/utils/backcompat/__init__.py", line 2, in <module>
+    from torch._C import _set_backcompat_broadcast_warn
+ModuleNotFoundError: No module named 'torch._C'

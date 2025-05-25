@@ -10,7 +10,8 @@ import torch.optim as optim
 from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Custom imports from the src directory
 from src.dataset import SatelliteDataset_o
 from src.flowmatching import FlowMatchingModel, FlowMatchingConfig

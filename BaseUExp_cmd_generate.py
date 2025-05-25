@@ -8,7 +8,7 @@ per_group = 3
 
 # === Base Params === #
 base_params = {
-    "epochs": [100, 200],
+    "epochs": [100],
     "batch_size": [4],
     "in_dim": [4, 6],  # input_shape will be auto calculated
     "learning_rate": [0.0001],
@@ -18,8 +18,8 @@ base_params = {
     "start_date": ["20210101"],
     "end_date": ["20210630"],
     "max_folders": [180],
-    "history_frames": [0, 1, 3, 6],
-    "future_frame": [0, 1, 3, 6],
+    "history_frames": [0],
+    "future_frame": [0],
     "refresh_rate": [10],
     "train_model": [True],
     "retrieve_dataset": [False],
@@ -100,7 +100,7 @@ for g_id, group in enumerate(cmds_groups):
         "#PBS -l mem=90GB",
         "#PBS -l jobfs=90GB",
         "#PBS -l wd",
-        "#PBS -M auhuyg@gmail.com",
+        "#PBS -M junyanbai0918@gmail.com",
         "#PBS -m abe",
         f"#PBS -N {prefix}_Group{g_id}",
         "module load use.own",

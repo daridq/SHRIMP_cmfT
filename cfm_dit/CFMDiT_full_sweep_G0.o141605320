@@ -1,0 +1,23 @@
+Flow Matching + DiT Job 141605320.gadi-pbs started at Sat May 24 23:47:30 AEST 2025
+Working directory: /home/562/jb6516/SHRIMP_Flowmatch/cfm_dit
+Node: gadi-gpu-v100-0135.gadi.nci.org.au
+GPUs: 
+Experiment: full_sweep
+Starting Flow Matching command 1 in group 0 at Sat May 24 23:47:30 AEST 2025
+Finished Flow Matching command 1 in group 0 at Sat May 24 23:47:31 AEST 2025
+All Flow Matching experiments in this group done at Sat May 24 23:47:31 AEST 2025.
+
+======================================================================================
+                  Resource Usage on 2025-05-24 23:47:35:
+   Job Id:             141605320.gadi-pbs
+   Project:            jp09
+   Exit Status:        0
+   Service Units:      0.03
+   NCPUs Requested:    12                     NCPUs Used: 12              
+                                           CPU Time Used: 00:00:00        
+   Memory Requested:   128.0GB               Memory Used: 25.75MB         
+   NGPUs Requested:    1                 GPU Utilisation: 0%              
+                                         GPU Memory Used: 0B              
+   Walltime requested: 24:00:00            Walltime Used: 00:00:02        
+   JobFS requested:    90.0GB                 JobFS used: 0B              
+======================================================================================
