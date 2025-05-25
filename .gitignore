@@ -35,3 +35,5 @@ job_logs/
 CFMDiT_full_*
 
 cfm_dit/cfm_dit_job_logs/
+
+cfm_dit/__pycache__/
