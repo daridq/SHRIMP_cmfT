@@ -10,7 +10,8 @@ import torch.optim as optim
 from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Custom imports from the src directory
 from src.blocks import UNet
 from src.dataset import SatelliteDataset
@@ -56,17 +57,17 @@ if __name__ == "__main__":
     argparser.add_argument("--label", default="", type=str)
     argparser.add_argument("--device", default="cuda", type=str, choices=("cuda", "cpu", "mps"))
     argparser.add_argument("--num-workers", default=4, type=int)
-    argparser.add_argument("--sat-files-path", default="", type=str)  # Sat Dataset path
-    argparser.add_argument("--rainfall-files-path", default="", type=str)  # Sat Dataset path
+    argparser.add_argument("--sat-files-path", default="/mnt/c/Users/Lenovo/Desktop/Rader/satellite", type=str)  # Sat Dataset path
+    argparser.add_argument("--rainfall-files-path", default="/mnt/c/Users/Lenovo/Desktop/Rader/radar", type=str)  # Sat Dataset path
     argparser.add_argument("--start-date", default="", type=str)  # Sat Dataset path
     argparser.add_argument("--end-date", default="", type=str)  # Sat Dataset path
     argparser.add_argument("--max-folders", default=None, type=int)  # Sat Dataset path
     argparser.add_argument("--history-frames", default=0, type=int)  # history frames
     argparser.add_argument("--future-frame", default=0, type=int)  # predict one future frame
     argparser.add_argument("--refresh-rate", default=10, type=int)  # interval of frames
-    argparser.add_argument("--model-path", default="", type=str)  # Saved model path
-    argparser.add_argument("--results", default="", type=str)  # Test dataset sampling results
-    argparser.add_argument("--train-model", action='store_true')  # store_true: default false=no train; store_false: default true=train
+    argparser.add_argument("--model-path", default="model/", type=str)  # Saved model path
+    argparser.add_argument("--results", default="model/results/", type=str)  # Test dataset sampling results
+    argparser.add_argument("--train-model", default=True,action='store_true')  # store_true: default false=no train; store_false: default true=train
     argparser.add_argument("--retrieve-dataset", action='store_true')  # store_true: no retrieve; store_false: retrieve
     argparser.add_argument("--load-model", default="", type=str)
     args = argparser.parse_args()

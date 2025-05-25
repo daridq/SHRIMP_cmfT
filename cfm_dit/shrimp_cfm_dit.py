@@ -13,9 +13,9 @@ from torch.utils.tensorboard import SummaryWriter
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Custom imports from the src directory
-from src.dataset import SatelliteDataset_o
+from src.dataset import SatelliteDataset
 from src.flowmatching import FlowMatchingModel, FlowMatchingConfig
-from src.DatasetBuilder import DatasetBuilder_o
+from src.DatasetBuilder import DatasetBuilder
 from src.DiTModels import DiT_models
 from tqdm import tqdm
 
@@ -34,22 +34,22 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
 
     # Hyper-parameters
-    argparser.add_argument("--epochs", default=50, type=int)
-    argparser.add_argument("--batch-size", default=4, type=int)
-    argparser.add_argument("--sampling-timesteps", default=50, type=int)  # Changed for Flow Matching
+    argparser.add_argument("--epochs", default=1, type=int)
+    argparser.add_argument("--batch-size", default=2, type=int) # even number for cfg to pack
+    argparser.add_argument("--sampling-timesteps", default=10, type=int)  # Changed for Flow Matching
     argparser.add_argument("--in-dim", default=5, type=int)
     argparser.add_argument("--out-dim", default=1, type=int)
     argparser.add_argument("--input-shape", default=(5, 128, 128), type=parse_tuple)
-    argparser.add_argument("--dit-model", type=str, choices=list(DiT_models.keys()), default="DiT-XL/2")
+    argparser.add_argument("--dit-model", type=str, choices=list(DiT_models.keys()), default="DiT-S/2")
     
     # Flow Matching specific parameters
-    argparser.add_argument("--sigma-min", default=1e-4, type=float, help="Minimum noise level for Flow Matching")
-    argparser.add_argument("--sigma-max", default=1.0, type=float, help="Maximum noise level for Flow Matching")
-    argparser.add_argument("--rho", default=7.0, type=float, help="Time distribution parameter for Flow Matching")
+    argparser.add_argument("--sigma-min", default=0.01, type=float, help="Minimum noise level for Flow Matching")
+    argparser.add_argument("--sigma-max", default=0.5, type=float, help="Maximum noise level for Flow Matching")
+    argparser.add_argument("--rho", default=1.0, type=float, help="Time distribution parameter for Flow Matching")
     argparser.add_argument("--target-type", default="velocity", type=str, choices=("velocity", "x_0"), help="Flow Matching target type")
-    argparser.add_argument("--solver-type", default="heun", type=str, choices=("euler", "heun", "dopri5"), help="ODE solver type")
+    argparser.add_argument("--solver-type", default="euler", type=str, choices=("euler", "heun", "dopri5"), help="ODE solver type")
     
-    argparser.add_argument("--loss-type", default="Hilburn_Loss", type=str, choices=("l1", "l2", "Hilburn_Loss"))
+    argparser.add_argument("--loss-type", default="l2", type=str, choices=("l1", "l2", "Hilburn_Loss"))
     argparser.add_argument("--learning-rate", default=0.0001, type=float)
     argparser.add_argument("--gf-sigmat", default=0, type=float)
     argparser.add_argument("--gf-sigma1", default=0, type=float)
@@ -60,17 +60,17 @@ if __name__ == "__main__":
     argparser.add_argument("--label", default="", type=str)
     argparser.add_argument("--device", default="cuda", type=str, choices=("cuda", "cpu", "mps"))
     argparser.add_argument("--num-workers", default=4, type=int)
-    argparser.add_argument("--sat-files-path", default="", type=str)  # Sat Dataset path
-    argparser.add_argument("--rainfall-files-path", default="", type=str)  # Sat Dataset path
+    argparser.add_argument("--sat-files-path", default="/mnt/c/Users/Lenovo/Desktop/Rader/satellite", type=str)  # Sat Dataset path
+    argparser.add_argument("--rainfall-files-path", default="/mnt/c/Users/Lenovo/Desktop/Rader/radar", type=str)  # Sat Dataset path
     argparser.add_argument("--start-date", default="", type=str)  # Sat Dataset path
     argparser.add_argument("--end-date", default="", type=str)  # Sat Dataset path
     argparser.add_argument("--max-folders", default=None, type=int)  # Sat Dataset path
     argparser.add_argument("--history-frames", default=0, type=int)  # history frames
     argparser.add_argument("--future-frame", default=0, type=int)  # predict one future frame
     argparser.add_argument("--refresh-rate", default=10, type=int)  # interval of frames
-    argparser.add_argument("--model-path", default="", type=str)  # Saved model path
-    argparser.add_argument("--results", default="", type=str)  # Test dataset sampling results
-    argparser.add_argument("--train-model", action='store_true')  # store_true: default false=no train; store_false: default true=train
+    argparser.add_argument("--model-path", default="model/", type=str)  # Saved model path
+    argparser.add_argument("--results", default="model/results/", type=str)  # Test dataset sampling results
+    argparser.add_argument("--train-model", default=True,action='store_true')  # store_true: default false=no train; store_false: default true=train
     argparser.add_argument("--retrieve-dataset", action='store_true')  # store_true: no retrieve; store_false: retrieve
     argparser.add_argument("--load-model", default="", type=str)
     args = argparser.parse_args()
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     logger.info(f"Model Configuration saved to {os.path.join(args.model_path, f'arguments_{args.label}.json')}")
 
     # Prepare dataset
-    datasetbuilder = DatasetBuilder_o(
+    datasetbuilder = DatasetBuilder(
         sat_path=args.sat_files_path,
         radar_path=args.rainfall_files_path,
         start_date=args.start_date,
@@ -123,9 +123,9 @@ if __name__ == "__main__":
         logger.info(f"Built new dataset to {dataset_pkl_path}")
     
     # Load dataset
-    train_dataset = SatelliteDataset_o(files=train_files, in_dim=args.in_dim, transform=None)
-    val_dataset = SatelliteDataset_o(files=val_files, in_dim=args.in_dim, transform=None)
-    test_dataset = SatelliteDataset_o(files=test_files, in_dim=args.in_dim, transform=None)
+    train_dataset = SatelliteDataset(files=train_files, in_dim=args.in_dim, transform=None)
+    val_dataset = SatelliteDataset(files=val_files, in_dim=args.in_dim, transform=None)
+    test_dataset = SatelliteDataset(files=test_files, in_dim=args.in_dim, transform=None)
     train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
     val_dataloader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
     test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
@@ -182,7 +182,7 @@ if __name__ == "__main__":
 
         train_losses = []
         val_losses = []
-        best_val_loss = float('inf')  # Initialize best validation loss
+        best_val_loss = float('inf')  # Initialize best validation loss, TODO: torch.inf
         for epoch in range(saved_epoch+1, saved_epoch+args.epochs+1):
             start_time = time.time()
             # Training

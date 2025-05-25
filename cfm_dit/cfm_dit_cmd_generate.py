@@ -13,38 +13,36 @@ per_group = 1 # Number of commands per PBS job script
 base_params = {
     # Basic training parameters
     "epochs": [50],
-    "batch_size": [4],
+    "batch_size": [4], # batch size must be even 
     "in_dim": [5],  # satellite + radar channels
     "out_dim": [1],  # radar output
     
     # DiT model configurations
-    "dit_model": ["DiT-L/4"],
+    "dit_model": ["DiT-S/2"],
     
     # Flow Matching specific parameters
     "sigma_min": [1e-4],
     "sigma_max": [1.0],
-    "rho": [7.0],  # Time distribution parameter
-    "target_type": ["velocity"],  # Focus on velocity field learning
-    "solver_type": ["heun"],  # ODE solver types
-    "sampling_timesteps": [50],  # Different sampling speeds
+    "rho": [7.0],  # 
+    "target_type": ["velocity"], 
+    "solver_type": ["heun"],  
+    "sampling_timesteps": [50], 
     
     # Training configuration
-    "loss_type": ["Hilburn_Loss"],
+    "loss_type": ["l2"],
     "learning_rate": [0.0001],
-    "gf_sigmat": [0],  # Gaussian filter for training noise
-    "gf_sigma1": [0],  # Gaussian filter for initial sampling noise
-    "gf_sigma2": [0],  # Gaussian filter for intermediate sampling
-    "cfg_scale": [1.0],  # Classifier-free guidance scale
+    "gf_sigmat": [0], 
+    "gf_sigma1": [0],  
+    "gf_sigma2": [0], 
+    "cfg_scale": [1.0],  
     
     # Data parameters
     "device": ["cuda"],
     "sat_files_path": ["/g/data/kl02/vhl548/SHRIMP/noradar"],
     "rainfall_files_path": ["/g/data/kl02/vhl548/SHRIMP/radar/71"],
-    "start_date": ["20210101"],
-    "end_date": ["20210110"],  # Longer period for better training
     "max_folders": [20],
-    "history_frames": [0],  # Experiment with temporal history
-    "future_frame": [1],    # Different prediction horizons
+    "history_frames": [0],  
+    "future_frame": [1],    
     "refresh_rate": [10],
     
     # Execution control
@@ -53,7 +51,7 @@ base_params = {
     "load_model": [""],
 }
 # === Experimental Configurations === #
-# Define specific experimental groups for targeted comparisons
+
 
 
 
@@ -89,7 +87,34 @@ solver_comparison_params = {
     "load_model": [""],
 }
 
-quick_params = solver_comparison_params
+quick_params = {
+    "epochs": [1],
+    "batch_size": [2],
+    "in_dim": [5],
+    "out_dim": [1],
+    "input_shape": ["(5,128,128)"],
+    "dit_model": ["DiT-S/2"],
+    "sigma_min": [0.01],
+    "sigma_max": [0.5],
+    "rho": [1.0],
+    "target_type": ["velocity"],
+    "solver_type": ["euler"],  # Compare solvers
+    "sampling_timesteps": [10],  # Different sampling speeds
+    "loss_type": ["l2"],
+    "learning_rate": [0.0001],
+    "gf_sigmat": [0],
+    "cfg_scale": [1.0],
+    "device": ["cuda"],
+    "sat_files_path": ["/g/data/kl02/vhl548/SHRIMP/noradar"],
+    "rainfall_files_path": ["/g/data/kl02/vhl548/SHRIMP/radar/71"],
+    "max_folders": [1],
+    "history_frames": [0],
+    "future_frame": [0],
+    "refresh_rate": [10],
+    "train_model": [True],
+    "retrieve_dataset": [False],
+    "load_model": [""],
+}
 
 # === Command Generation Functions === #
 
