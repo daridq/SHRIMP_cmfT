@@ -1,25 +1,55 @@
+#!/usr/bin/env python3
+"""
+CfmU Experiment Command Generator for UNet models
+Optimized for Conditional Flow Matching with UNet architecture
+"""
+
 import os
 import hashlib
 import itertools
 
 # === Configuration === #
-prefix = "BaseUExp"
-per_group = 3
+prefix = "CfmU"
+per_group = 1
 
 # === Base Params === #
 base_params = {
-    "epochs": [100, 200],
-    "batch_size": [4],
-    "in_dim": [4, 6],  # input_shape will be auto calculated
-    "learning_rate": [0.0001],
-    "device": ["GPU"],
+    # Training parameters - CFM converges faster than diffusion
+    "epochs": [10],  # Reduced from 400 - CFM typically converges faster
+    "batch_size": [4],  # CFM is more stable with larger batches
+    
+    # Flow Matching specific parameters
+    "timesteps": [500],  # Reduced from 1000 - CFM needs fewer timesteps
+    "sampling_timesteps": [100],  # Much reduced from 500 - CFM sampling is more efficient
+    "path_type": ["optimal_transport"],  # CFM specific path type
+    "sigma_min": [0.001],  # CFM specific minimum noise level
+    
+    # Model architecture
+    "in_dim": [5],  # input_shape will be auto calculated
+    "out_dim": [1],
+    "embed_dim": [64],
+    "dim_scales": [(1,2,4,8)],
+    
+    # Optimization parameters
+    "loss_type": ["l2"],  # L2 works well for CFM
+    "learning_rate": [0.0001],  # CFM learning rate
+    
+    # Gaussian filtering - less critical for CFM
+    "gf_sigmat": [0.0],  # CFM is less sensitive to noise augmentation
+    "gf_sigma1": [0.0],
+    "gf_sigma2": [0.0],
+    
+    # Model configuration
+    "no_clp": [False],
+    "device": ["cuda"],
+    "num_workers": [2],
     "sat_files_path": ["/g/data/kl02/vhl548/SHRIMP/noradar"],
     "rainfall_files_path": ["/g/data/kl02/vhl548/SHRIMP/radar/71"],
     "start_date": ["20210101"],
-    "end_date": ["20210630"],
+    "end_date": ["20210401"],
     "max_folders": [180],
-    "history_frames": [0, 1, 3, 6],
-    "future_frame": [0, 1, 3, 6],
+    "history_frames": [0],
+    "future_frame": [0],
     "refresh_rate": [10],
     "train_model": [True],
     "retrieve_dataset": [False],
@@ -28,12 +58,13 @@ base_params = {
 
 # === Command Generation Functions === #
 
+def compute_input_shape(in_dim, history_frames):
+    first_dim = (in_dim - 1) * (history_frames + 1) + 1
+    return (first_dim, 128, 128)
+
 def generate_label(params):
     label_str = "_".join(f"{k}={v}" for k, v in sorted(params.items()))
     return hashlib.md5(label_str.encode()).hexdigest()
-
-def dit_to_prefix(dit_model):
-    return dit_model.replace("/", "_").replace("-", "_")
 
 def generate_cmds(base_params):
     keys, values = zip(*base_params.items())
@@ -44,6 +75,9 @@ def generate_cmds(base_params):
         h = params["history_frames"]
         f = params["future_frame"]
         v = params["in_dim"] - 1
+
+        input_shape = compute_input_shape(params["in_dim"], h)
+        params["input_shape"] = input_shape
 
         label = generate_label(params)
 
@@ -56,7 +90,7 @@ def generate_cmds(base_params):
         params["model_path"] = model_path
         params["results"] = results_path
 
-        cmd_lines = [f'python3 -u "./shrimp_baseline.py" \\']
+        cmd_lines = [f'python3 -u "./shrimp_cfmU.py" \\']
         cmd_lines.append(f'    --label "{label}" \\')
 
         for k, v in params.items():
@@ -93,18 +127,18 @@ for g_id, group in enumerate(cmds_groups):
         "#!/bin/bash",
         "#PBS -P jp09",
         "#PBS -q gpuvolta",
-        "#PBS -l walltime=12:00:00",
+        "#PBS -l walltime=48:00:00",
         "#PBS -l storage=gdata/kl02+scratch/kl02",
         "#PBS -l ncpus=12",
         "#PBS -l ngpus=1",
         "#PBS -l mem=90GB",
         "#PBS -l jobfs=90GB",
         "#PBS -l wd",
-        "#PBS -M auhuyg@gmail.com",
+        "#PBS -M hsun3103@uni.sydney.edu.au",
         "#PBS -m abe",
         f"#PBS -N {prefix}_Group{g_id}",
         "module load use.own",
-        "module load tensorflow/2.15.0",
+        "module load python3/3.9.2"
     ]
     for i, (cmd, _, _) in enumerate(group):
         if i != len(group) - 1:
