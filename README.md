@@ -11,6 +11,8 @@ Diffusion vs Flow Matching models for precipitation prediction.
 
 ## Structure
 
+The generated model files and data input files for all experiments are deleted due to huge size.
+
 ```
 ├── models/           # Model implementations
 ├── exp_results/      # Experimental results
@@ -33,5 +35,6 @@ Diffusion vs Flow Matching models for precipitation prediction.
 To run experiment from GADI
 
 ```bash
-python models/DiffExp_cmd_generate.py    # Generate and automate PBS sciprts
+# Generate and automate PBS sciprts
+python models/DiffExp_cmd_generate.py
 ```
