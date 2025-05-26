@@ -1,0 +1,49 @@
+#!/bin/bash
+#PBS -P jp09
+#PBS -q gpuvolta
+#PBS -l walltime=48:00:00
+#PBS -l storage=gdata/kl02+scratch/kl02
+#PBS -l ncpus=12
+#PBS -l ngpus=1
+#PBS -l mem=90GB
+#PBS -l jobfs=90GB
+#PBS -l wd
+#PBS -M hsun3103@uni.sydney.edu.au
+#PBS -m abe
+#PBS -N CfmT_Group0
+module load use.own
+module load python3/3.9.2
+python3 -u "./shrimp_cfmT.py" \
+    --label "4a59ea7afd8e698d78e40c157da2f454" \
+    --epochs "200" \
+    --batch-size "4" \
+    --timesteps "1000" \
+    --sampling-timesteps "500" \
+    --path-type "optimal_transport" \
+    --sigma-min "0.001" \
+    --in-dim "5" \
+    --out-dim "1" \
+    --dit-model "DiT-S/4" \
+    --loss-type "l2" \
+    --learning-rate "0.0001" \
+    --gf-sigmat "0.0" \
+    --gf-sigma1 "0.0" \
+    --gf-sigma2 "0.0" \
+    --device "cuda" \
+    --num-workers "2" \
+    --sat-files-path "/g/data/kl02/vhl548/SHRIMP/noradar" \
+    --rainfall-files-path "/g/data/kl02/vhl548/SHRIMP/radar/71" \
+    --start-date "20210101" \
+    --end-date "20210401" \
+    --max-folders "180" \
+    --history-frames "1" \
+    --future-frame "1" \
+    --refresh-rate "10" \
+    --train-model \
+    --load-model "" \
+    --input-shape "(9, 128, 128)" \
+    --model-path "./h1-f1/models" \
+    --results "./h1-f1/results" \
+    > ./job_logs/${PBS_JOBID}_4a59ea7afd8e698d78e40c157da2f454.log 2>&1
+wait
+echo "All experiments done."

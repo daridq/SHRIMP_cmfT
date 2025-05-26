@@ -1,0 +1,16 @@
+All experiments done.
+
+======================================================================================
+                  Resource Usage on 2025-05-26 17:11:12:
+   Job Id:             141671690.gadi-pbs
+   Project:            jp09
+   Exit Status:        0
+   Service Units:      553.72
+   NCPUs Requested:    12                     NCPUs Used: 12              
+                                           CPU Time Used: 65:58:11        
+   Memory Requested:   90.0GB                Memory Used: 42.52GB         
+   NGPUs Requested:    1                 GPU Utilisation: 100%            
+                                         GPU Memory Used: 3.2GB           
+   Walltime requested: 48:00:00            Walltime Used: 15:22:52        
+   JobFS requested:    90.0GB                 JobFS used: 7.55KB          
+======================================================================================
